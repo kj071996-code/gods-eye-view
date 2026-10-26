@@ -41,6 +41,18 @@ jobs:
             cp -r dist/gods-eye-view/cesium/. dist/cesium/
             rm -rf dist/gods-eye-view
           fi
+      - name: Rewrite root-relative asset paths for subpath hosting
+        run: |
+          for f in $(grep -rl --include='*.js' '"/models/' dist/assets/ 2>/dev/null); do
+            sed -i 's#"/models/#"/gods-eye-view/models/#g' "$f"
+          done
+          for f in $(grep -rl --include='*.js' '"/logo.svg"' dist/assets/ 2>/dev/null); do
+            sed -i 's#"/logo.svg"#"/gods-eye-view/logo.svg"#g' "$f"
+          done
+          for f in $(grep -rl --include='*.js' '"/mic.svg"' dist/assets/ 2>/dev/null); do
+            sed -i 's#"/mic.svg"#"/gods-eye-view/mic.svg"#g' "$f"
+          done
+          sed -i 's#"/logo.svg"#"/gods-eye-view/logo.svg"#g' dist/index.html
       - name: Verify Cesium assets are in place
         run: test -f dist/cesium/Cesium.js && test -f dist/cesium/Widgets/widgets.css
       - name: Setup Pages
