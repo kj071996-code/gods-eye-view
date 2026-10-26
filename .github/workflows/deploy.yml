@@ -34,6 +34,15 @@ jobs:
         run: npm ci
       - name: Build production bundle
         run: npm run build -- --base=/gods-eye-view/
+      - name: Fix Cesium path for subpath hosting
+        run: |
+          if [ -d dist/gods-eye-view/cesium ]; then
+            mkdir -p dist/cesium
+            cp -r dist/gods-eye-view/cesium/. dist/cesium/
+            rm -rf dist/gods-eye-view
+          fi
+      - name: Verify Cesium assets are in place
+        run: test -f dist/cesium/Cesium.js && test -f dist/cesium/Widgets/widgets.css
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
